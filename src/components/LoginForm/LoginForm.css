@@ -1,0 +1,10 @@
+.login-form{
+  height:100%;
+  display:flex;
+  flex-flow: row nowrap;
+  justify-content: center;
+  align-items: center;
+}
+.login-form__container{
+  background-color: yellow;
+}
