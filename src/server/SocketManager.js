@@ -34,7 +34,10 @@ module.exports = (socket) => {
     }
   })
 
-
+  socket.on('test',(room)=>{
+    io.sockets.in(room).emit('message','SUCCESS');
+    console.log('test by');
+  })
   //socket.on('startGame',(room)=>{
   //   const url = parsedUrl.parse(socket.handshake.headers.referer).query;
   //   if(url === null)// нету пути

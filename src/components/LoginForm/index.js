@@ -1,25 +1,24 @@
 import React, { Component } from 'react';
 import './LoginForm.css';
 import uuidv4 from 'uuid/v4';
-import io from 'socket.io-client';
-
-import {clienUrl, socketUrl} from '../../config.js'
-
-const room = uuidv4();
+import { socketConnect } from 'socket.io-react';
+import {clienUrl, socketUrl} from '../../config.js';
+//const room = uuidv4();
 class LoginForm extends Component {
   componentDidMount(){
-    this.socket  = io(socketUrl);
-    this.socket.emit('start',room)
-    this.socket.on('ready',()=>{
+    const {socket,room} = this.props;
+    socket.emit('start',room);
+    socket.on('ready',()=>{
       this.props.startGame();
     })
   }
   render() {
+    const {room} = this.props;
     return (
       <div className="login-form">
         <div className="login-form__container">
           <h3>Login Form</h3>
-            <i>link :</i>
+            <i>link:</i>
             <p>{`${clienUrl}?${room}`}</p>
         </div>
       </div>
@@ -27,4 +26,4 @@ class LoginForm extends Component {
   }
 }
 
-export default LoginForm;
+export default socketConnect(LoginForm);

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
-import {LoginForm} from './components'
+import {LoginForm,GameContainer} from './components'
+import uuidv4 from 'uuid/v4';
+const room = uuidv4();
 const style = {
-  height: '800px'
+  height: '100%'
 }
 class App extends Component {
   state = {
@@ -16,14 +18,21 @@ class App extends Component {
       <div style={style}>
       {
         !start ?
-            <LoginForm startGame={this.startGame}/>
+            <LoginForm startGame={this.startGame} room={room}/>
         :
-        <div><h1>Success</h1></div>
+        <GameContainer room={room}/>
       }
-
       </div>
     );
   }
 }
 
 export default App;
+/*
+{
+  !start ?
+      <LoginForm startGame={this.startGame}/>
+  :
+  <GameContainer />
+}
+*/

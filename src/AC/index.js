@@ -1,6 +1,7 @@
 import * as act from '../constants'
-// export function startGame(){
-//   return {
-//     type: act.START_GAME
-//   }
-// }
+export function initSocket(socket){
+  return {
+    type: act.INIT_SOCKET,
+    socket:socket
+  }
+}
