@@ -28,11 +28,3 @@ class App extends Component {
 }
 
 export default App;
-/*
-{
-  !start ?
-      <LoginForm startGame={this.startGame}/>
-  :
-  <GameContainer />
-}
-*/

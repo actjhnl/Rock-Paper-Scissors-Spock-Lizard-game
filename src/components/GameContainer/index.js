@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import {compose} from 'recompose';
 import io from 'socket.io-client';
 import { socketConnect } from 'socket.io-react';
+import {Header} from '../'
 
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
@@ -19,13 +20,6 @@ class GameContainer extends Component {
     messages: []
   }
   componentDidMount(){
-     // const {socket,room} = this.props;
-     // socket.emit('test',room);
-     // socket.on('message',(message)=>{
-     //   alert(message)
-     // })
-     //console.log(this.props.socket);
-
     this.props.socket.on('message', message => {
       this.setState({ messages: [message, ...this.state.messages]})
     })
@@ -33,7 +27,7 @@ class GameContainer extends Component {
   handleSubmit = (event) => {
     const {socket,room} = this.props;
     const body = event.target.value
-    if (event.keyCode === 13 && body) {
+    if (event.keyCode === 13 && body !== '') {
       const message = {
         body,
         from: 'Me'
@@ -64,13 +58,7 @@ class GameContainer extends Component {
       <div className={classes.root}>
         <div className={classes.appFrame}>
         {/*header*/}
-          <AppBar position="absolute" className={classes.appBar}>
-            <Toolbar>
-              <Typography variant="title" color="inherit" noWrap>
-                Rock-Paper-Scissors-Spock-Lizard game
-              </Typography>
-            </Toolbar>
-          </AppBar>
+          <Header />
           {/*sideBarChat*/}
           {drawerChat}
           <main className={classes.content}>
