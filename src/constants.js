@@ -1,1 +1,1 @@
-export const INIT_SOCKET = 'INIT_SOCKET';
+export const NEW_MESSAGE = 'NEW_MESSAGE';

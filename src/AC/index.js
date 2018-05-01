@@ -1,7 +1,7 @@
 import * as act from '../constants'
-export function initSocket(socket){
+export function sendMessage(message){
   return {
-    type: act.INIT_SOCKET,
-    socket:socket
+    type: act.NEW_MESSAGE,
+    message:message
   }
 }

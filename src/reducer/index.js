@@ -1,12 +1,13 @@
 import { combineReducers } from 'redux';
 import * as act from '../constants';
 export default combineReducers({
-  socket:(state={},action)=>{
+  messages:(messages=[],action)=>{
     const {type} = action;
     switch(type){
-      case act.INIT_SOCKET:
-        return Object.assign({},action.socket);
-      default: return state;
+      case act.NEW_MESSAGE:
+        const {message} = action;
+        return [message, ...messages];
+      default: return messages;
     }
   },
 })

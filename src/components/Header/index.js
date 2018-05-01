@@ -1,6 +1,4 @@
 import React, { Component } from 'react';
-import {compose} from 'recompose';
-import { socketConnect } from 'socket.io-react';
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';

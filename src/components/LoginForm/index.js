@@ -1,15 +1,12 @@
 import React, { Component } from 'react';
 import {compose} from 'recompose';
 import './LoginForm.css';
-import uuidv4 from 'uuid/v4';
 import { socketConnect } from 'socket.io-react';
-import {clienUrl, socketUrl} from '../../config.js';
+import {clienUrl} from '../../config.js';
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import Paper from 'material-ui/Paper';
-import Typography from 'material-ui/Typography';
-import TextField from 'material-ui/TextField';
+import {Paper,TextField} from 'material-ui';
 
 const styles = theme => ({
   root: theme.mixins.gutters({

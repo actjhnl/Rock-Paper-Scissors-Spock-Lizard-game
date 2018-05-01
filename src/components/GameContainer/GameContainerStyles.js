@@ -12,29 +12,6 @@ export const styles = theme => ({
     display: 'flex',
     width: '100%',
   },
-  appBar: {
-    width: `calc(100% - ${drawerWidth}px)`,
-    marginLeft: drawerWidth,
-  },
-  drawerPaper: {
-    position: 'relative',
-    width: drawerWidth,
-  },
-  inputMessagePanel:{
-    width: '100%',
-    height: '20%',
-    padding: theme.spacing.unit * 3,
-  },
-  main:{
-    width: '100%',
-    backgroundColor:'red',
-    height: '65%',
-  },
-  gestureBar:{
-    width: '100%',
-    backgroundColor:'yellow',
-    height: '15%',
-  },
   toolbar: theme.mixins.toolbar,
   content: {
     flexGrow: 1,
