@@ -10,4 +10,13 @@ export default combineReducers({
       default: return messages;
     }
   },
+  gestures:(gestures=[],action)=>{
+    const {type} = action;
+    switch(type){
+      case act.SHOW_GESTURE:
+        const {gesture} = action;
+        return [...gestures,gesture];
+      default: return gestures;
+    }
+  },
 })

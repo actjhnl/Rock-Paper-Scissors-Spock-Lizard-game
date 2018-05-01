@@ -17,7 +17,7 @@ class InputMessagePanel extends Component {
     if (event.keyCode === 13 && body !== '') {
       const message = {
         body,
-        from: 'Me'
+        from: 'You'
       }
       this.props.sendMessage(message)
       socket.emit('message', body)

@@ -5,3 +5,9 @@ export function sendMessage(message){
     message:message
   }
 }
+export function sendGesture(gesture){
+  return {
+    type: act.SHOW_GESTURE,
+    gesture:gesture
+  }
+}
