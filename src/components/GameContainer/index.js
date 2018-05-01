@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import {connect} from 'react-redux';
 import {compose} from 'recompose';
 import io from 'socket.io-client';
 import { socketConnect } from 'socket.io-react';
@@ -7,40 +6,64 @@ import { socketConnect } from 'socket.io-react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames';
 import { withStyles } from 'material-ui/styles';
-import Drawer from 'material-ui/Drawer';
-import AppBar from 'material-ui/AppBar';
-import Toolbar from 'material-ui/Toolbar';
-import List from 'material-ui/List';
+import {
+  Drawer,AppBar,Toolbar,
+  List,TextField,Typography,
+  Divider,Paper
+} from 'material-ui';
 import { MenuItem } from 'material-ui/Menu';
-import TextField from 'material-ui/TextField';
-import Typography from 'material-ui/Typography';
-import Divider from 'material-ui/Divider';
-import Paper from 'material-ui/Paper';
 
 import {styles,drawerWidth} from './GameContainerStyles';
 class GameContainer extends Component {
-  componentDidMount(){
-     const {socket,room} = this.props;
-     socket.emit('test',room);
-     socket.on('message',(message)=>{
-       alert(message)
-     })
+  state = {
+    messages: []
   }
+  componentDidMount(){
+     // const {socket,room} = this.props;
+     // socket.emit('test',room);
+     // socket.on('message',(message)=>{
+     //   alert(message)
+     // })
+     //console.log(this.props.socket);
+
+    this.props.socket.on('message', message => {
+      this.setState({ messages: [message, ...this.state.messages]})
+    })
+  }
+  handleSubmit = (event) => {
+    const {socket,room} = this.props;
+    const body = event.target.value
+    if (event.keyCode === 13 && body) {
+      const message = {
+        body,
+        from: 'Me'
+      }
+      this.setState({ messages: [message, ...this.state.messages]})
+      socket.emit('message', body)
+      event.target.value = '';
+    }
+  }
+
   render() {
     const { classes } = this.props;
-
+    const messages = this.state.messages.map((message, index) => {
+      return <li key={index}>
+        <b>{message.from}: {message.body}</b>
+      </li>
+    });
     const drawerChat = ( // чат
       <Drawer variant="permanent" classes={{paper: classes.drawerPaper,}}>
         <div className={classes.toolbar} />
         <Divider />
         <List>
-
+          {messages}
         </List>
       </Drawer>
     );
     return (
       <div className={classes.root}>
         <div className={classes.appFrame}>
+        {/*header*/}
           <AppBar position="absolute" className={classes.appBar}>
             <Toolbar>
               <Typography variant="title" color="inherit" noWrap>
@@ -48,18 +71,26 @@ class GameContainer extends Component {
               </Typography>
             </Toolbar>
           </AppBar>
+          {/*sideBarChat*/}
           {drawerChat}
           <main className={classes.content}>
             <div className={classes.toolbar} />
+            {/*main game screen*/}
             <div className={classes.main}>
               <h2>game screen</h2>
             </div>
+            {/*gesturesBar*/}
             <div className={classes.gestureBar}>
               gestures
             </div>
+            {/*inputMessagePanel*/}
             <Paper className={classes.inputMessagePanel}>
-              <textarea rows="7" style={{width:'90%'}}/><br/>
-              <button>Send</button>
+              <textarea rows="7"
+                        style={{width:'90%'}}
+                        placeholder="Сообшение в чат..."
+                        onKeyUp={this.handleSubmit}
+              /><br/>
+              <button onClick={this.handleSubmit}>Send</button>
             </Paper>
           </main>
         </div>
