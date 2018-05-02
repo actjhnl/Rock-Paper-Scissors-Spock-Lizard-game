@@ -11,3 +11,8 @@ export function sendGesture(gesture){
     gesture:gesture
   }
 }
+export function startGame(){
+  return {
+    type: act.START_GAME,
+  }
+}

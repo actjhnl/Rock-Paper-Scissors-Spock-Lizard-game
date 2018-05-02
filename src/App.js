@@ -1,4 +1,8 @@
 import React, { Component } from 'react';
+import {connect} from 'react-redux';
+import { socketConnect } from 'socket.io-react';
+import {compose} from 'recompose';
+import {startGame} from './AC';
 import {LoginForm,GameContainer} from './components'
 import uuidv4 from 'uuid/v4';
 const room = uuidv4();
@@ -6,19 +10,20 @@ const style = {
   height: '100%'
 }
 class App extends Component {
-  state = {
-    start: false
-  }
-  startGame = () =>{
-    this.setState({start:!this.state.start})
-  }
+  // componentDidMount(){
+  //   const {socket,room} = this.props;
+  //   socket.emit('start',room);
+  //   socket.on('ready',()=>{
+  //     this.props.startGame();
+  //   })
+  // }
   render() {
-    const {start} = this.state;
+    const {start} = this.props;
     return (
       <div style={style}>
       {
         !start ?
-            <LoginForm startGame={this.startGame} room={room}/>
+            <LoginForm room={room}/>
         :
         <GameContainer room={room}/>
       }
@@ -26,5 +31,7 @@ class App extends Component {
     );
   }
 }
-
-export default App;
+const reduxWrapper = connect(state=>({
+  start: state.start
+}),{startGame})
+export default compose(reduxWrapper,socketConnect)(App);

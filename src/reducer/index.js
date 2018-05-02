@@ -1,6 +1,9 @@
 import { combineReducers } from 'redux';
 import * as act from '../constants';
 export default combineReducers({
+  start:(state=false,action)=>{
+    return action.type === act.START_GAME ? !state: state;
+  },
   messages:(messages=[],action)=>{
     const {type} = action;
     switch(type){

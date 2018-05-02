@@ -4,4 +4,7 @@ export const styles = theme => ({
     width: `calc(100% - ${drawerWidth}px)`,
     marginLeft: drawerWidth,
   },
+  flex: {
+    flex: 1,
+  },
 });

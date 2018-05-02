@@ -4,13 +4,14 @@ export const styles = theme => ({
     backgroundColor:'red',
     height: '65%',
     display:'flex',
+    flexDirection:'column',
     justifyContent:'center',
     alignItems:'center'
   },
   block:{
     width: '100%',
     //backgroundColor:'red',
-    height: '100%',
+    height: 'auto',
     display:'flex',
     justifyContent:'center',
     alignItems:'center'
