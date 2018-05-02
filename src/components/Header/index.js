@@ -16,7 +16,7 @@ class Header extends Component {
   handleClick = () => {
     this.props.socket.emit('exit');
     this.props.startGame();
-    //window.location.href = clientUrl;
+    window.location.href = clientUrl;
   }
   // componentDidMount(){
   //   this.props.socket.on('exit',()=>{

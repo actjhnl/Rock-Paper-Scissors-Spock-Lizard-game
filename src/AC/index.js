@@ -16,3 +16,18 @@ export function startGame(){
     type: act.START_GAME,
   }
 }
+export function showLoader(){
+  return {
+    type: act.SHOW_LOADER
+  }
+}
+export function reset(){
+  return {
+    type: act.RESET
+  }
+}
+export function makeChoiceGesture(){
+  return {
+    type: act.MAKE_A_CHOICE
+  }
+}

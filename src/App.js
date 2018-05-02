@@ -10,13 +10,6 @@ const style = {
   height: '100%'
 }
 class App extends Component {
-  // componentDidMount(){
-  //   const {socket,room} = this.props;
-  //   socket.emit('start',room);
-  //   socket.on('ready',()=>{
-  //     this.props.startGame();
-  //   })
-  // }
   render() {
     const {start} = this.props;
     return (

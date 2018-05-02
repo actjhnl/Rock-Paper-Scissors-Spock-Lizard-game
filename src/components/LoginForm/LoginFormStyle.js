@@ -16,4 +16,8 @@ export const styles = theme => ({
     marginRight: theme.spacing.unit,
     width: 500,
   },
+  progress: {
+    margin: theme.spacing.unit * 2,
+  },
+  toolbar: theme.mixins.toolbar,
 });

@@ -2,11 +2,17 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import {compose} from 'recompose';
 import { socketConnect } from 'socket.io-react';
+import {reset} from '../../AC';
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-//import {} from 'material-ui';
-//import ExitToApp from '@material-ui/icons/ExitToApp';
+import {Button} from 'material-ui';
+import Dialog, {
+  DialogActions,
+  DialogContent,
+  DialogContentText,
+  DialogTitle,
+} from 'material-ui/Dialog';
 
 import {styles} from './OutputResultStyle'
 
@@ -19,9 +25,41 @@ const GESTURES = {
   "Spock":["Rock","Scissors"]
 }
 class OutputResulForm extends Component {
-  // handleClick = () => {
-  //   this.props.
-  // }
+  state = {
+    alone:false,
+    open:false
+  }
+  handleClick = () => {
+    //this.setState({ open: true });
+    this.props.socket.emit('playInvitation')
+  }
+  handleCloseDisagree = () => {
+    this.setState({ open: false });
+    // отправляю отказ
+    this.props.socket.emit('InvitationDisagree');
+  };
+  handleCloseAgree =()=>{
+    this.setState({ open: false });
+    //отправляю согласие
+    this.props.socket.emit('InvitationAgree');
+  }
+
+
+  componentDidMount(){
+    this.props.socket.on('inform',()=>{
+      this.setState({alone:true})
+    })
+    this.props.socket.on('playInvitation',()=>{
+      this.setState({ open: true });
+    })
+    //
+    this.props.socket.on('InvitationDisagree',()=>{
+      alert('disagree')
+    })
+    this.props.socket.on('InvitationAgree',()=>{
+      this.props.reset();
+    })
+  }
   render() {
     const {classes,gestures,socket} = this.props;
     //winner detection
@@ -42,8 +80,35 @@ class OutputResulForm extends Component {
         <button onClick={this.handleClick}>Again</button>
       </div>
     )
+    const invitation = ( // на кнопку - отсылаю на сервр. мне открывать это оконо не надо. буду только мнять состояние. а закрывать функция нужна
+      <div>
+        <Dialog
+          open={this.state.open}
+          onClose={this.handleClose}
+          aria-labelledby="alert-dialog-title"
+          aria-describedby="alert-dialog-description"
+        >
+          <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+          <DialogContent>
+            <DialogContentText id="alert-dialog-description">
+              Хотите сыграть еще?
+            </DialogContentText>
+          </DialogContent>
+          <DialogActions>
+            <Button onClick={this.handleCloseDisagree} color="primary">
+              Disagree
+            </Button>
+            <Button onClick={this.handleCloseAgree} color="primary" autoFocus>
+              Agree
+            </Button>
+          </DialogActions>
+        </Dialog>
+      </div>
+    )
     return (
       <div>
+        {this.state.alone && <h1>Опонент ушел. Выйдите из комнаты чтобы начать новую игру</h1>}
+        {invitation}
         {body}
       </div>
     );
@@ -55,5 +120,5 @@ OutputResulForm.propTypes = {
 const materialWrapper = withStyles(styles);
 const reduxWrapper = connect(state=>({
   gestures:state.gestures
-}),{})
+}),{reset})
 export default compose(reduxWrapper,materialWrapper,socketConnect)(OutputResulForm);
