@@ -34,11 +34,10 @@ class InputMessagePanel extends Component {
     return (
       <Paper className={classes.inputMessagePanel}>
         <textarea rows="7"
-                  style={{width:'90%'}}
-                  placeholder="Сообшение в чат..."
+                  style={{width:'90%',padding:'20px'}}
+                  placeholder="Message"
                   onKeyUp={this.handleSubmit}
-        /><br/>
-        <button onClick={this.handleSubmit}>Send</button>
+        />
       </Paper>
     );
   }

@@ -8,9 +8,6 @@ module.exports = (socket) => {
   const url = parsedUrl.parse(socket.handshake.headers.referer).query;
   // 1
   socket.on('start',(room)=>{
-    console.log(`===================     =======================`)
-    console.log(waitingRooms)
-    console.log(`===================     =======================`)
     if(url === null) {
       socket.join(room);
       if(!waitingRooms[room])
@@ -35,6 +32,9 @@ module.exports = (socket) => {
       console.log("The room is undefined. You can start game");
       //socket.emit('err');
     }
+    console.log(`===================     =======================`)
+    console.log(waitingRooms)
+    console.log(`===================     =======================`)
 
   })
   // 2

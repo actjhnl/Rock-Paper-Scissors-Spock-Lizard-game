@@ -5,7 +5,7 @@ import {sendMessage} from '../../AC';
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import {Drawer,Divider,List} from 'material-ui';
+import {Drawer,Divider,List,Typography,AppBar,Toolbar } from 'material-ui';
 
 import {styles} from './SideBarChatStyle'
 
@@ -13,15 +13,28 @@ class SideBarChat extends Component {
   render() {
     const {classes} = this.props;
     const messages = this.props.messages.map((message, index) => {
-      return <li key={index}>
-        <b>{message.from}: {message.body}</b>
-      </li>
+      const stl = message.from === 'You' ? classes.you : classes.opponent;
+      return (
+        <div className={stl} key={index}>
+          <Typography className={classes.title} color="textSecondary">
+            {message.from}
+          </Typography>
+          <Typography variant="headline">
+            {message.body}
+          </Typography>
+        </div>
+      )
     });
     return (
       <Drawer variant="permanent" classes={{paper: classes.drawerPaper,}}>
-        <div className={classes.toolbar} />
-        <Divider />
-        <List>
+        <AppBar position="static" color="default">
+          <Toolbar>
+            <Typography variant="title" color="inherit">
+              Chat
+            </Typography>
+          </Toolbar>
+        </AppBar>
+        <List className={classes.listMessage}>
           {messages}
         </List>
       </Drawer>

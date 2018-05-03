@@ -7,7 +7,7 @@ export const styles = theme => ({
     justifyContent:'flex-start',
     alignItems:'center',
     width: '100%',
-    backgroundColor:'#E3F2FD',
+    backgroundColor:'#f5f5f5',
     height: '15%',
   },
   gesture:{

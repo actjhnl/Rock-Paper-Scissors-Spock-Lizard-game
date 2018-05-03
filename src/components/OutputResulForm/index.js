@@ -76,10 +76,6 @@ class OutputResulForm extends Component {
       :
         resultGame = gestures[1].from // такого жеста нет, значит второй победил
     }
-    /*
-    <h1>{resultGame === "Ничья" ? "Ничья" : resultGame===this.props.socket.id?"You win" : "You lose"}</h1>
-    <button onClick={this.handleClick}>Again</button>
-    */
     const body = (
       (resultGame || this.state.alone) &&
       <div>
@@ -91,7 +87,7 @@ class OutputResulForm extends Component {
             resultGame && <Button variant="raised" color="primary" className={classes.button} onClick={this.handleClick}>Again</Button>
           }
           <Typography component="p" style={{color:'red'}}>
-            {this.state.alone && "Опонент ушел. Выйдите из комнаты чтобы начать новую игру"}
+            {this.state.alone && "Your opponent leaved the room. Before starting new game you should exit"}
           </Typography>
 
       </div>
@@ -105,11 +101,6 @@ class OutputResulForm extends Component {
           aria-describedby="alert-dialog-description"
         >
           <DialogTitle id="alert-dialog-title">{"Do you want to play again?"}</DialogTitle>
-          <DialogContent>
-            <DialogContentText id="alert-dialog-description">
-              <img src='https://s.tcdn.co/985/54d/98554d9b-45ff-370b-8cf7-0f4af8813814/192/10.png' alt='k' style={{width:'100px',height:'100px',margin:'0 auto'}}/>
-            </DialogContentText>
-          </DialogContent>
           <DialogActions>
             <Button onClick={this.handleCloseDisagree} color="primary">
               Disagree
