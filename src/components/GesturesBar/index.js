@@ -9,6 +9,9 @@ import { withStyles } from 'material-ui/styles';
 import {Button} from 'material-ui';
 
 import {styles} from './GesturesBarStyle';
+
+import * as i from '../../img';
+
 const ROCK = "Rock",
       PAPER = "Paper",
       SCISSORS = "Scissors",
@@ -35,11 +38,21 @@ class GesturesBar extends Component {
     const {classes,choice} = this.props;
     return (
       <div className={classes.gestureBar}>
-        <div className={classes.gesture} onClick={()=>choice?alert(78):this.handleGesture(ROCK)}>Rock</div>
-        <div className={classes.gesture} onClick={()=>this.handleGesture(PAPER)}>Paper</div>
-        <div className={classes.gesture} onClick={()=>this.handleGesture(SCISSORS)}>Scissors</div>
-        <div className={classes.gesture} onClick={()=>this.handleGesture(LIZARD)}>Lizard</div>
-        <div className={classes.gesture} onClick={()=>this.handleGesture(SPOCK)}>Spock</div>
+        <div className={classes.gesture} onClick={()=>this.handleGesture(ROCK)}>
+          <img className={classes.img} src={i.rock} alt={"rock"}/>
+        </div>
+        <div className={classes.gesture} onClick={()=>this.handleGesture(PAPER)}>
+          <img className={classes.img} src={i.paper} alt={"paper"}/>
+        </div>
+        <div className={classes.gesture} onClick={()=>this.handleGesture(SCISSORS)}>
+          <img className={classes.img} src={i.scissors} alt={"scissors"}/>
+        </div>
+        <div className={classes.gesture} onClick={()=>this.handleGesture(LIZARD)}>
+          <img className={classes.img} src={i.lizard} alt={"lizard"}/>
+        </div>
+        <div className={classes.gesture} onClick={()=>this.handleGesture(SPOCK)}>
+          <img className={classes.img} src={i.spock} alt={"spock"}/>
+        </div>
       </div>
     );
   }

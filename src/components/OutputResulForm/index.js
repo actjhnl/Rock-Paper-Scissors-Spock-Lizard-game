@@ -6,7 +6,7 @@ import {reset} from '../../AC';
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import {Button} from 'material-ui';
+import {Button,Paper,Typography} from 'material-ui';
 import Dialog, {
   DialogActions,
   DialogContent,
@@ -29,33 +29,36 @@ class OutputResulForm extends Component {
     alone:false,
     open:false
   }
+  // отправляеи опоненту запрос сыграть еще раз
   handleClick = () => {
-    //this.setState({ open: true });
     this.props.socket.emit('playInvitation')
   }
+  // на предложение отвечаем отказом
   handleCloseDisagree = () => {
     this.setState({ open: false });
     // отправляю отказ
     this.props.socket.emit('InvitationDisagree');
   };
+  // на предложение отвечаем согласием
   handleCloseAgree =()=>{
     this.setState({ open: false });
     //отправляю согласие
     this.props.socket.emit('InvitationAgree');
   }
-
-
   componentDidMount(){
-    this.props.socket.on('inform',()=>{
+    // если соперник покинул комнату
+    this.props.socket.on('opponentLeave',()=>{
       this.setState({alone:true})
     })
+    //пришло приглашение сыграть снова. Открывается форма
     this.props.socket.on('playInvitation',()=>{
       this.setState({ open: true });
     })
-    //
+    //опонент ответил отказом. СДЕЛАТЬ ФОРМУ СООБЩАЮЩУЮ ОБ ЭТОМ
     this.props.socket.on('InvitationDisagree',()=>{
       alert('disagree')
     })
+    // опонент ответил согласием. Сброс прошлой партии.
     this.props.socket.on('InvitationAgree',()=>{
       this.props.reset();
     })
@@ -69,18 +72,31 @@ class OutputResulForm extends Component {
         resultGame = "Ничья"
       : GESTURES[gestures[0].gesture].includes(gestures[1].gesture) ? // типа искать будем по массивчеку жеста первого ответившего игрока
                                                                       // ищем жест второго игрока в массиве выграшых жестов первого
-        resultGame = gestures[0].from // такой жест найден, значит первый победил
+        resultGame = gestures[0].from // такой жест найден, значит первый победил. отправляем id победителя, чтобы потом на этапе проверки вывести соответствующе резкльтату сообщение
       :
         resultGame = gestures[1].from // такого жеста нет, значит второй победил
     }
+    /*
+    <h1>{resultGame === "Ничья" ? "Ничья" : resultGame===this.props.socket.id?"You win" : "You lose"}</h1>
+    <button onClick={this.handleClick}>Again</button>
+    */
     const body = (
-      resultGame &&
+      (resultGame || this.state.alone) &&
       <div>
-        <h1>{resultGame === "Ничья" ? "Ничья" : resultGame===this.props.socket.id?"You win" : "You lose"}</h1>
-        <button onClick={this.handleClick}>Again</button>
+
+          <Typography variant="headline" component="h1">
+            {resultGame ? resultGame === "Ничья" ? "Ничья" : resultGame===this.props.socket.id?"You win!" : "You lose" : "Oops=("}
+          </Typography>
+          {
+            resultGame && <Button variant="raised" color="primary" className={classes.button} onClick={this.handleClick}>Again</Button>
+          }
+          <Typography component="p" style={{color:'red'}}>
+            {this.state.alone && "Опонент ушел. Выйдите из комнаты чтобы начать новую игру"}
+          </Typography>
+
       </div>
     )
-    const invitation = ( // на кнопку - отсылаю на сервр. мне открывать это оконо не надо. буду только мнять состояние. а закрывать функция нужна
+    const invitation = (
       <div>
         <Dialog
           open={this.state.open}
@@ -88,10 +104,10 @@ class OutputResulForm extends Component {
           aria-labelledby="alert-dialog-title"
           aria-describedby="alert-dialog-description"
         >
-          <DialogTitle id="alert-dialog-title">{"Use Google's location service?"}</DialogTitle>
+          <DialogTitle id="alert-dialog-title">{"Do you want to play again?"}</DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-description">
-              Хотите сыграть еще?
+              <img src='https://s.tcdn.co/985/54d/98554d9b-45ff-370b-8cf7-0f4af8813814/192/10.png' alt='k' style={{width:'100px',height:'100px',margin:'0 auto'}}/>
             </DialogContentText>
           </DialogContent>
           <DialogActions>
@@ -107,7 +123,6 @@ class OutputResulForm extends Component {
     )
     return (
       <div>
-        {this.state.alone && <h1>Опонент ушел. Выйдите из комнаты чтобы начать новую игру</h1>}
         {invitation}
         {body}
       </div>

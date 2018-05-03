@@ -57,7 +57,7 @@ module.exports = (socket) => {
   socket.on('exit',()=>{
       let room = Object.keys(socket.rooms).filter(item => item!=socket.id);//get current room
       socket.leave(room);
-      socket.broadcast.to(room).emit('inform');
+      socket.broadcast.to(room).emit('opponentLeave');
   })
   //
   socket.on('playInvitation',()=>{// отправляю второму игроку предложение сыграть еще раз
