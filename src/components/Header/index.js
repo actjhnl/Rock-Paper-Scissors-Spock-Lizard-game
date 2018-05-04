@@ -18,11 +18,6 @@ class Header extends Component {
     this.props.startGame();
     window.location.href = clientUrl;
   }
-  // componentDidMount(){
-  //   this.props.socket.on('exit',()=>{
-  //     // вывести просто на экран, что соперник покинул игру. Игрок сам выйдет...
-  //   })
-  // }
   render() {
     const {classes} = this.props;
     return (

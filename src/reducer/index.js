@@ -28,6 +28,10 @@ export default combineReducers({
     }
   },
   choice:(choice=false,action)=>{
-    return action.type === act.MAKE_A_CHOICE ? !choice: choice;
+    return action.type === act.MAKE_A_CHOICE ?
+      action.gesture
+      : action.type === act.RESET ?
+        false
+      : choice;
   },
 })

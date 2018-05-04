@@ -26,8 +26,9 @@ export function reset(){
     type: act.RESET
   }
 }
-export function makeChoiceGesture(){
+export function makeChoiceGesture(gesture){
   return {
-    type: act.MAKE_A_CHOICE
+    type: act.MAKE_A_CHOICE,
+    gesture:gesture
   }
 }

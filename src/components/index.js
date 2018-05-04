@@ -5,10 +5,12 @@ import Header from './Header/';
 import InputMessagePanel from './InputMessagePanel/';
 import MainGameScreen from './MainGameScreen/';
 import SideBarChat from './SideBarChat/';
-import OutputResulForm from './OutputResulForm/'
+import OutputResulForm from './OutputResulForm/';
+import GestureIconChoice from './GestureIconChoice/';
 
 export {
   GameContainer, LoginForm, GesturesBar,
   InputMessagePanel, MainGameScreen,
-  SideBarChat,Header,OutputResulForm
+  SideBarChat,Header,OutputResulForm,
+  GestureIconChoice
 }

@@ -3,6 +3,7 @@ import {compose} from 'recompose';
 import {connect} from 'react-redux';
 import { socketConnect } from 'socket.io-react';
 import {sendGesture,makeChoiceGesture} from '../../AC';
+import {GestureIconChoice} from '../'
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
@@ -17,18 +18,30 @@ const ROCK = "Rock",
       SCISSORS = "Scissors",
       LIZARD = "Lizard",
       SPOCK = "Spock";
-
-class GesturesBar extends Component {
-  handleGesture = (gesture) =>{
-    const {socket} = this.props;
-    const act = {
-      gesture:gesture,
-      from:this.props.socket.id
-    }
-    this.props.sendGesture(act);
-    socket.emit('gesture',gesture);
-    this.props.makeChoiceGesture();
+const gestureImages = [
+  {
+    url: i.rock,
+    gesture: ROCK
+  },
+  {
+    url: i.paper,
+    gesture:PAPER
+  },
+  {
+    url: i.scissors,
+    gesture: SCISSORS
+  },
+  {
+    url: i.lizard,
+    gesture: LIZARD
+  },
+  {
+    url: i.spock,
+    gesture:SPOCK
   }
+
+];
+class GesturesBar extends Component {
   componentDidMount(){
     this.props.socket.on('result',(act)=>{
       this.props.sendGesture(act);
@@ -36,23 +49,17 @@ class GesturesBar extends Component {
   }
   render() {
     const {classes,choice} = this.props;
+
+    const icon = gestureImages.map((value)=>{
+      return <GestureIconChoice
+                  url={value.url}
+                  gesture={value.gesture}
+                  choosen={value.gesture.includes(choice)} //если выбрана была иконка
+            />
+    })
     return (
       <div className={classes.gestureBar}>
-        <div className={classes.gesture} onClick={()=>this.handleGesture(ROCK)}>
-          <img className={classes.img} src={i.rock} alt={"rock"}/>
-        </div>
-        <div className={classes.gesture} onClick={()=>this.handleGesture(PAPER)}>
-          <img className={classes.img} src={i.paper} alt={"paper"}/>
-        </div>
-        <div className={classes.gesture} onClick={()=>this.handleGesture(SCISSORS)}>
-          <img className={classes.img} src={i.scissors} alt={"scissors"}/>
-        </div>
-        <div className={classes.gesture} onClick={()=>this.handleGesture(LIZARD)}>
-          <img className={classes.img} src={i.lizard} alt={"lizard"}/>
-        </div>
-        <div className={classes.gesture} onClick={()=>this.handleGesture(SPOCK)}>
-          <img className={classes.img} src={i.spock} alt={"spock"}/>
-        </div>
+        {icon}
       </div>
     );
   }
