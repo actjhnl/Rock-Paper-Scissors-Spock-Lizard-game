@@ -3,14 +3,20 @@ import {compose} from 'recompose';
 import {connect} from 'react-redux';
 import { socketConnect } from 'socket.io-react';
 import {sendMessage} from '../../AC';
+import * as e from '../../constants';
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
 import {Paper} from 'material-ui';
 
 import {styles} from './InputMessagePanelStyle'
-
+/**
+ * Компонент панели ввода сообщения в чат
+ */
 class InputMessagePanel extends Component {
+  /**
+   * Функция обработки сообщения по нажатию Enter
+   */
   handleSubmit = (event) => {
     const {socket} = this.props;
     const body = event.target.value
@@ -20,12 +26,12 @@ class InputMessagePanel extends Component {
         from: 'You'
       }
       this.props.sendMessage(message)
-      socket.emit('message', body)
+      socket.emit(e.NEW_MESSAGE, body)
       event.target.value = '';
     }
   }
   componentDidMount(){
-    this.props.socket.on('message', message => {
+    this.props.socket.on(e.NEW_MESSAGE, message => {
       this.props.sendMessage(message)
     })
   }

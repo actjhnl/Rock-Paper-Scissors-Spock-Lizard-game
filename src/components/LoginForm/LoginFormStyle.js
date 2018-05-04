@@ -11,6 +11,15 @@ export const styles = theme => ({
     justifyContent: 'center',
     alignItems: 'center',
   },
+  band:{
+    height:'60%',
+    width:'100%',
+    backgroundColor:'#4FC3F7',
+    display:'flex',
+    flexFlow: 'row nowrap',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   textField: {
     marginLeft: theme.spacing.unit,
     marginRight: theme.spacing.unit,

@@ -1,75 +1,107 @@
 const io = require('./index.js').io;
 var parsedUrl = require('url');
-
-let waitingRooms = {};//комнаты,где ожидают второго игрока
+const {
+  START_GAME, READY, EXIT,
+  RESULT, GESTURE, NEW_MESSAGE,
+  PLAY_INVITATION, INVITATION_DISAGREE,
+  INVITATION_AGREE, OPPONENT_LEAVE
+} = require('../constants')
+/**
+ * Список комнат ожидания второго игрока
+ */
+let waitingRooms = {};
 
 module.exports = (socket) => {
-  console.log(`Socket ID ${socket.id}`);
+  console.log(`-----> connect: Socket ID ${socket.id}`);
   const url = parsedUrl.parse(socket.handshake.headers.referer).query;
-  // 1
-  socket.on('start',(room)=>{
+  /**
+   * Клиент запрашивает соединение
+   * Смотрим по URL кто пришел
+   */
+  socket.on(START_GAME,(room)=>{
+    /**
+     * Новый пользователь.Создаем комнату. Он ожидает
+     */
     if(url === null) {
       socket.join(room);
       if(!waitingRooms[room])
         waitingRooms[room] = true;
-      console.log('создана комната ' + room);
-      console.log(`человек в комнате ${io.sockets.adapter.rooms[room].length}`)
     }
+    /**
+     * Оппонент для ожидающего игрока
+     * Пускаем в комнату. Комната удаляется из ожидания
+     */
     else if (waitingRooms[url] && io.sockets.adapter.rooms[url].length === 1){
         socket.join(url);
-        console.log('присоединен к комнате '+ url);
-        console.log(`человек в комнате ${io.sockets.adapter.rooms[url].length}`);
-        io.sockets.in(url).emit('ready');
+        io.sockets.in(url).emit(READY);
         delete waitingRooms[url];
     }
-    else if (!waitingRooms[url] || io.sockets.adapter.rooms[url].length > 2){
-      // + сообщений, что запрашиваемые комнаты недоступны, но вы можете начать игру по ссылке в форме
+    /**
+     * Комната занята или комнаты по такому URL не найдено
+     * Создаем под них новую комнату. Ожидают второго игрока
+     */
+    else{ //(!waitingRooms[url] || io.sockets.adapter.rooms[url].length > 2){
       socket.join(room);
       if(!waitingRooms[room])
         waitingRooms[room] = true;
-    } // лишний и фейк
-    else {
-      console.log("The room is undefined. You can start game");
-      //socket.emit('err');
     }
-    console.log(`===================     =======================`)
+    // else {
+    //   console.log("!");
+    // }
+    console.log(`===========   state waitingRoom now   ===============`)
     console.log(waitingRooms)
-    console.log(`===================     =======================`)
+    console.log(`=====================================================`)
 
   })
-  // 2
-  socket.on('message',(body)=>{
+  /**
+   * Новое сообщение от одного из игроков.
+   * Пересылаем
+   */
+  socket.on(NEW_MESSAGE,(body)=>{
     let room = Object.keys(socket.rooms).filter(item => item!=socket.id);//get current room
-    socket.broadcast.to(room).emit('message',{
+    socket.broadcast.to(room).emit(NEW_MESSAGE,{
       body,
-      from: 'Opponent'//socket.id.slice(8)
+      from: 'Opponent'
     });
   })
-  // 3
-  socket.on('gesture',(gesture)=>{
+  /**
+   * Игроком сделан выбор жестта
+   */
+  socket.on(GESTURE,(gesture)=>{
     let room = Object.keys(socket.rooms).filter(item => item!=socket.id);//get current room
-    socket.broadcast.to(room).emit('result',{
+    socket.broadcast.to(room).emit(RESULT,{
       gesture,
       from: socket.id
     });
   })
-  //
-  socket.on('exit',()=>{
+  /**
+   * Игроком была покинута комната
+   */
+  socket.on(EXIT,()=>{
       let room = Object.keys(socket.rooms).filter(item => item!=socket.id);//get current room
-      socket.leave(room);
-      socket.broadcast.to(room).emit('opponentLeave');
+      //socket.leave(room);
+      socket.disconnect()
+      socket.broadcast.to(room).emit(OPPONENT_LEAVE);
   })
-  //
-  socket.on('playInvitation',()=>{// отправляю второму игроку предложение сыграть еще раз
+  /**
+   * Один из игроков приглашает сыграть еще раз
+   */
+  socket.on(PLAY_INVITATION,()=>{
     let room = Object.keys(socket.rooms).filter(item => item!=socket.id);//get current room
-    socket.broadcast.to(room).emit('playInvitation');
+    socket.broadcast.to(room).emit(PLAY_INVITATION);
   })
-  socket.on('InvitationDisagree',()=>{
+  /**
+   * Игрок не принял приглашение сыграть еще раз
+   */
+  socket.on(INVITATION_DISAGREE,()=>{
     let room = Object.keys(socket.rooms).filter(item => item!=socket.id);//get current room
-    socket.broadcast.to(room).emit('InvitationDisagree');
+    socket.broadcast.to(room).emit(INVITATION_DISAGREE);
   })
-  socket.on('InvitationAgree',()=>{
+  /**
+   * Игрок принял приглашение сыграть еще раз
+   */
+  socket.on(INVITATION_AGREE,()=>{
     let room = Object.keys(socket.rooms).filter(item => item!=socket.id);//get current room
-    io.sockets.in(room).emit('InvitationAgree');
+    io.sockets.in(room).emit(INVITATION_AGREE);
   })
 }

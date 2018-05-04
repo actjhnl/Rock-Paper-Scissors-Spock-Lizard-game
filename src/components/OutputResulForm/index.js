@@ -3,6 +3,8 @@ import {connect} from 'react-redux';
 import {compose} from 'recompose';
 import { socketConnect } from 'socket.io-react';
 import {reset} from '../../AC';
+import * as e from '../../constants';
+import InvitationForm from './';
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
@@ -15,8 +17,11 @@ import Dialog, {
 } from 'material-ui/Dialog';
 
 import {styles} from './OutputResultStyle'
-
-//обект типа ключ - жест, значение - массив жест, которые он бьет
+/**
+ * Объект правил игры
+ * Ключ - Название жеста
+ * Значение - Массив названий жестов которые он бьет
+ */
 const GESTURES = {
   "Rock":["Scissors","Lizard"],
   "Paper":["Rock","Spock"],
@@ -24,74 +29,87 @@ const GESTURES = {
   "Lizard":["Paper","Spock"],
   "Spock":["Rock","Scissors"]
 }
+/**
+ * Дочерний компонент компонента MainGameScreen
+ * Отображает результат игры, форму приглашения
+ */
 class OutputResulForm extends Component {
   state = {
     alone:false,
     open:false
   }
-  // отправляеи опоненту запрос сыграть еще раз
+  // отправляет опоненту запрос сыграть еще раз
   handleClick = () => {
-    this.props.socket.emit('playInvitation')
+    this.props.socket.emit(e.PLAY_INVITATION)
   }
-  // на предложение отвечаем отказом
+  // на предложение не согласен
   handleCloseDisagree = () => {
     this.setState({ open: false });
-    // отправляю отказ
-    this.props.socket.emit('InvitationDisagree');
+    // отправка отказа
+    this.props.socket.emit(e.INVITATION_DISAGREE);
   };
-  // на предложение отвечаем согласием
+  // на предложение согласен
   handleCloseAgree =()=>{
     this.setState({ open: false });
-    //отправляю согласие
-    this.props.socket.emit('InvitationAgree');
+    //отправка согласия
+    this.props.socket.emit(e.INVITATION_AGREE);
   }
   componentDidMount(){
     // если соперник покинул комнату
-    this.props.socket.on('opponentLeave',()=>{
+    this.props.socket.on(e.OPPONENT_LEAVE,()=>{
       this.setState({alone:true})
     })
     //пришло приглашение сыграть снова. Открывается форма
-    this.props.socket.on('playInvitation',()=>{
+    this.props.socket.on(e.PLAY_INVITATION,()=>{
       this.setState({ open: true });
     })
-    //опонент ответил отказом. СДЕЛАТЬ ФОРМУ СООБЩАЮЩУЮ ОБ ЭТОМ
-    this.props.socket.on('InvitationDisagree',()=>{
+    //оппонент ответил отказом. СДЕЛАТЬ ФОРМУ СООБЩАЮЩУЮ ОБ ЭТОМ
+    this.props.socket.on(e.INVITATION_DISAGREE,()=>{
       alert('disagree')
     })
-    // опонент ответил согласием. Сброс прошлой партии.
-    this.props.socket.on('InvitationAgree',()=>{
+    // оппонент ответил согласием. Сброс прошлой партии.
+    this.props.socket.on(e.INVITATION_AGREE,()=>{
       this.props.reset();
     })
   }
   render() {
     const {classes,gestures,socket} = this.props;
-    //winner detection
+    // Определение победителя
     let resultGame = '';
     if(gestures.length > 1){
       gestures[0].gesture === gestures[1].gesture ?
-        resultGame = "Ничья"
-      : GESTURES[gestures[0].gesture].includes(gestures[1].gesture) ? // типа искать будем по массивчеку жеста первого ответившего игрока
-                                                                      // ищем жест второго игрока в массиве выграшых жестов первого
-        resultGame = gestures[0].from // такой жест найден, значит первый победил. отправляем id победителя, чтобы потом на этапе проверки вывести соответствующе резкльтату сообщение
-      :
-        resultGame = gestures[1].from // такого жеста нет, значит второй победил
+        resultGame = "Ничья" :
+        /**
+         * Поиск по массиву жеста первого ответившего игрока
+         * ищем жест второго игрока в массиве выиграшых жестов первого
+         */
+        GESTURES[gestures[0].gesture].includes(gestures[1].gesture) ?
+        /**
+         * такой жест найден, значит первый победил. отправляем id победителя,
+         * чтобы потом на этапе проверки вывести соответствующе результату сообщение
+         */
+        resultGame = gestures[0].from :
+        // такого жеста нет, значит второй победил
+        resultGame = gestures[1].from
     }
+    /**
+     * Окно отображения результата игры
+     */
     const body = (
       (resultGame || this.state.alone) &&
       <div>
-
-          <Typography variant="headline" component="h1">
-            {resultGame ? resultGame === "Ничья" ? "Ничья" : resultGame===this.props.socket.id?"You win!" : "You lose" : "Oops=("}
-          </Typography>
-          {
-            resultGame && <Button variant="raised" color="primary" className={classes.button} onClick={this.handleClick}>Again</Button>
-          }
-          <Typography component="p" style={{color:'red'}}>
-            {this.state.alone && "Your opponent leaved the room. Before starting new game you should exit"}
-          </Typography>
-
+        <Typography variant="headline" component="h1">
+          {resultGame ? resultGame === "Ничья" ? "Ничья" : resultGame===this.props.socket.id?"You win!" : "You lose" : "Oops=("}
+        </Typography>
+        { resultGame && <Button variant="raised" color="primary" className={classes.button} onClick={this.handleClick}>Again</Button> }
+        <Typography component="p" style={{color:'red'}}>
+          {this.state.alone && "Your opponent leaved the room. Before starting new game you should exit"}
+        </Typography>
       </div>
     )
+    /**
+     * Окно приглашения сыграть еще раз
+     */
     const invitation = (
       <div>
         <Dialog

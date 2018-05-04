@@ -2,7 +2,6 @@ import React, { Component } from 'react';
 import {connect} from 'react-redux';
 import { socketConnect } from 'socket.io-react';
 import {compose} from 'recompose';
-import {startGame} from './AC';
 import {LoginForm,GameContainer} from './components'
 import uuidv4 from 'uuid/v4';
 const room = uuidv4();
@@ -26,5 +25,5 @@ class App extends Component {
 }
 const reduxWrapper = connect(state=>({
   start: state.start
-}),{startGame})
+}),{})
 export default compose(reduxWrapper,socketConnect)(App);

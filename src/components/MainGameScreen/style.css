@@ -1,0 +1,24 @@
+.left{
+  animation: left_rotating 0.5s linear 0.5s infinite;
+  animation-direction: alternate;
+}
+@keyframes left_rotating {
+  0% {
+    transform: rotate(-20deg)
+  }
+  100% {
+    transform: rotate(20deg)
+  }
+}
+.right{
+  animation: right_rotating 0.5s linear 0.5s infinite;
+  animation-direction: alternate;
+}
+@keyframes right_rotating {
+  0% {
+    transform: rotate(20deg)
+  }
+  100% {
+    transform: rotate(-20deg)
+  }
+}

@@ -1,30 +1,19 @@
 import React, { Component } from 'react';
 import {compose} from 'recompose';
 import {connect} from 'react-redux';
-import {sendMessage} from '../../AC';
+import {Message} from '../';
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-import {Drawer,Divider,List,Typography,AppBar,Toolbar } from 'material-ui';
+import {Drawer,List,Typography,AppBar,Toolbar } from 'material-ui';
 
 import {styles} from './SideBarChatStyle'
-
+/**
+ * Компонент отображения чата между игроками в комнате
+ */
 class SideBarChat extends Component {
   render() {
     const {classes} = this.props;
-    const messages = this.props.messages.map((message, index) => {
-      const stl = message.from === 'You' ? classes.you : classes.opponent;
-      return (
-        <div className={stl} key={index}>
-          <Typography className={classes.title} color="textSecondary">
-            {message.from}
-          </Typography>
-          <Typography variant="headline">
-            {message.body}
-          </Typography>
-        </div>
-      )
-    });
     return (
       <Drawer variant="permanent" classes={{paper: classes.drawerPaper,}}>
         <AppBar position="static" color="default">
@@ -35,7 +24,11 @@ class SideBarChat extends Component {
           </Toolbar>
         </AppBar>
         <List className={classes.listMessage}>
-          {messages}
+          {this.props.messages.map((message, index) => {
+            return (
+              <Message who={message.from} message={message.body}  key={index} />
+            )
+          })}
         </List>
       </Drawer>
     );
@@ -48,6 +41,6 @@ SideBarChat.propTypes = {
 const materialWrapper = withStyles(styles);
 const reduxWrapper = connect(state=>({
   messages:state.messages
-}),{sendMessage})
+}),{})
 
 export default compose(materialWrapper,reduxWrapper)(SideBarChat);

@@ -8,9 +8,12 @@ import {
 //material-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-//import {} from 'material-ui';
 
 import {styles} from './GameContainerStyles';
+/**
+ * Родительский компонент для всех компонентов игровой зоны.
+ * Отображение зависит от состояния "start"
+ */
 class GameContainer extends Component {
   render() {
     const { classes } = this.props;

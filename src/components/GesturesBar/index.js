@@ -3,6 +3,7 @@ import {compose} from 'recompose';
 import {connect} from 'react-redux';
 import { socketConnect } from 'socket.io-react';
 import {sendGesture,makeChoiceGesture} from '../../AC';
+import * as e from '../../constants';
 import {GestureIconChoice} from '../'
 //materal-ui
 import PropTypes from 'prop-types';
@@ -18,6 +19,9 @@ const ROCK = "Rock",
       SCISSORS = "Scissors",
       LIZARD = "Lizard",
       SPOCK = "Spock";
+/**
+ * Массив всех необходиых для отображения иконок
+ */
 const gestureImages = [
   {
     url: i.rock,
@@ -41,25 +45,27 @@ const gestureImages = [
   }
 
 ];
+/**
+ * Компонент отображения панели выбора жестов
+ */
 class GesturesBar extends Component {
   componentDidMount(){
-    this.props.socket.on('result',(act)=>{
+    this.props.socket.on(e.RESULT,(act)=>{
       this.props.sendGesture(act);
     })
   }
   render() {
     const {classes,choice} = this.props;
-
-    const icon = gestureImages.map((value)=>{
-      return <GestureIconChoice
-                  url={value.url}
-                  gesture={value.gesture}
-                  choosen={value.gesture.includes(choice)} //если выбрана была иконка
-            />
-    })
     return (
       <div className={classes.gestureBar}>
-        {icon}
+        {gestureImages.map((value)=>{
+            return <GestureIconChoice
+                    url={value.url}
+                    gesture={value.gesture}
+                    /*определение выбранного пользователем жеста*/
+                    choosen={value.gesture.includes(choice)}
+                   />
+        })}
       </div>
     );
   }

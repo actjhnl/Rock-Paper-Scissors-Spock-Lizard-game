@@ -3,20 +3,23 @@ import {compose} from 'recompose';
 import {connect} from 'react-redux';
 import { socketConnect } from 'socket.io-react';
 import {OutputResulForm} from '../'
-//import {} from '../../AC';
+import * as i from '../../img';
 //materal-ui
 import PropTypes from 'prop-types';
 import { withStyles } from 'material-ui/styles';
-//import {} from 'material-ui';
-
 import {styles} from './MainGameScreenStyle'
-
-import * as i from '../../img';
-
+import './style.css';
+/**
+ * Компонент главного экрана игры.
+ * Отображение жестов, выбранных двумя пользователями
+ */
 class MainGameScreen extends Component {
-  //функция, которая помогает определить какую картинку показывать по жесту
-  //на вход строка и булево значение
-  // на выходе src картинки
+  /**
+   * Определяет нужную картинку под жесту
+   * @param {String} gesture - Название жеста
+   * @param {Boolean} num - сторона игрока
+   * @return {String} src путь до изображения
+   */
   getGestureImg = (gesture, num) => {
     if(gesture === "Rock")
       return num ? i.left_rock : i.right_rock;
@@ -32,7 +35,6 @@ class MainGameScreen extends Component {
   }
   render() {
     const {classes,gestures,socket} = this.props;
-    // переменная будет хранить корректный src для картинки
     //display0
     const geture00 = gestures.length > 1 ? this.getGestureImg(gestures[0].gesture,0) : i.right_rock;
     const geture01 = gestures.length > 1 ? this.getGestureImg(gestures[1].gesture,1) : i.left_rock;
@@ -47,15 +49,18 @@ class MainGameScreen extends Component {
     // пара в направлении типа /
     const gesture10Img = <img className={classes.img} src={geture10} alt={"gesture10Img"}/>
     const gesture11Img = <img className={classes.img} src={geture11} alt={"gesture11Img"}/>
+    // анимируются только кулаки. Это для их одновременного запуска
+    const initStyleLeft = gestures.length > 1 ? classes.pair : `${classes.pair} left`;
+    const initStyleRight = gestures.length > 1 ? classes.pair : `${classes.pair} right`;
     // отображаются пары крест накрест
     const body = (
       <div className={classes.block}>
         {/*display 1*/}
-        <div className={classes.pair}>
+        <div className={initStyleLeft}>
           {order ? gesture10Img : gesture01Img}
         </div>
         {/*display 2*/}
-        <div className={classes.pair}>
+        <div className={initStyleRight}>
           {order ? gesture11Img : gesture00Img}
         </div>
       </div>
