@@ -99,7 +99,7 @@ class OutputResulForm extends Component {
       (resultGame || this.state.alone) &&
       <div>
         <Typography variant="headline" component="h1">
-          {resultGame ? resultGame === "Ничья" ? "Ничья" : resultGame===this.props.socket.id?"You win!" : "You lose" : "Oops=("}
+          {resultGame ? resultGame === "Draw" ? "Draw" : resultGame===this.props.socket.id?"You win!" : "You lose" : "Oops=("}
         </Typography>
         { resultGame && <Button variant="raised" color="primary" className={classes.button} onClick={this.handleClick}>Again</Button> }
         <Typography component="p" style={{color:'red'}}>
