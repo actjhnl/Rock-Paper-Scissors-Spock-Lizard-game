@@ -78,7 +78,7 @@ class OutputResulForm extends Component {
     let resultGame = '';
     if(gestures.length > 1){
       gestures[0].gesture === gestures[1].gesture ?
-        resultGame = "Ничья" :
+        resultGame = "Draw" :
         /**
          * Поиск по массиву жеста первого ответившего игрока
          * ищем жест второго игрока в массиве выиграшых жестов первого
